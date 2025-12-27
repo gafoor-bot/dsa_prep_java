@@ -1,11 +1,19 @@
 class Solution {
-    /* Link: https://neetcode.io/problems/gas-station/history
+    /* Link :https://neetcode.io/problems/gas-station/history
      * Finds the starting gas station index from which you can complete
      * the circular route. Returns -1 if impossible.
      *
      * @param gas  array of gas available at each station
      * @param cost array of gas required to travel to the next station
      * @return starting station index, or -1 if not possible
+     *
+     * Time Complexity: O(n)
+     *   - Single pass to compute total gas and total cost: O(n)
+     *   - Single pass to simulate the journey: O(n)
+     *   - Total: O(n)
+     *
+     * Space Complexity: O(1)
+     *   - Uses a few integer variables, no extra arrays or lists
      */
     public int canCompleteCircuit(int[] gas, int[] cost) {
 
