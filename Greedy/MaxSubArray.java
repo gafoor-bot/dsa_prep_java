@@ -1,31 +1,43 @@
+import java.util.HashSet;
+import java.util.Set;
+
 class Solution {
-    /*link: https://neetcode.io/problems/maximum-subarray/question
-    public int maxSubArray(int[] nums) {
-        // curr_sum will track the sum of the current subarray
-        int curr_sum = 0;
-        // max_sum will track the maximum subarray sum found so far
-        // initialize with first element to handle all-negative array case
-        int max_sum = nums[0];
+    public boolean mergeTriplets(int[][] triplets, int[] target) {
 
-        // If array has only one element, return it
-        if (nums.length == 1) return nums[0];
+        /* Link: https://neetcode.io/problems/merge-triplets-to-form-target/question?list=neetcode150
+         * Time Complexity: O(n)
+         * - We iterate through each triplet once.
+         * - Each triplet has only 3 elements, so all checks are constant time.
+         *
+         * Space Complexity: O(1)
+         * - We use a HashSet that can store at most 3 indices (0, 1, 2).
+         * - Extra space does not grow with input size.
+         */
 
-        // Iterate through each element in the array
-        for (int i = 0; i < nums.length; i++) {
-            // If current sum becomes negative, reset it to 0
-            // because a negative sum would decrease any future subarray sum
-            if (curr_sum < 0) {
-                curr_sum = 0;
+        // Set to track which target indices can be matched
+        Set<Integer> matchedIndices = new HashSet<>();
+
+        // Loop through all triplets
+        for (int[] triplet : triplets) {
+
+            // Skip invalid triplets that exceed the target in any position
+            if (triplet[0] > target[0] ||
+                triplet[1] > target[1] ||
+                triplet[2] > target[2]) {
+                continue;
             }
 
-            // Add current element to current sum
-            curr_sum += nums[i];
-
-            // Update max_sum if the current sum is greater than max_sum
-            max_sum = Math.max(curr_sum, max_sum);
+            // Check each index of the triplet
+            for (int i = 0; i < 3; i++) {
+                // If the value matches the target at this index,
+                // mark this index as achievable
+                if (triplet[i] == target[i]) {
+                    matchedIndices.add(i);
+                }
+            }
         }
 
-        // Return the largest subarray sum found
-        return max_sum;
+        // If all three indices are matched, we can form the target triplet
+        return matchedIndices.size() == 3;
     }
 }
