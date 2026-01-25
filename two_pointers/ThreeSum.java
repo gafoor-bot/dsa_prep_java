@@ -1,70 +1,60 @@
 class Solution {
 
-    /*
-     * Time Complexity: O(n^2)
-     * - Sorting the array takes O(n log n)
-     * - The outer loop runs O(n)
-     * - The two-pointer scan runs O(n) for each element
+    /* Link: https://neetcode.io/problems/trapping-rain-water/question?list=neetcode150
+     * Time Complexity: O(n)
+     * - Three linear passes over the array
      *
-     * Overall: O(n^2)
-     *
-     * Space Complexity: O(1) (excluding output list)
-     * - No extra space is used apart from the result list
+     * Space Complexity: O(n)
+     * - Uses two auxiliary arrays: max_left and max_right
      */
-    public List<List<Integer>> threeSum(int[] nums) {
+    public int trap(int[] height) {
 
-        // Sort the array to use the two-pointer technique
-        Arrays.sort(nums);
+        // If there are fewer than 3 bars, water cannot be trapped
+        if (height.length <= 2) return 0;
 
-        // List to store all unique triplets
-        List<List<Integer>> list = new LinkedList<>();
+        int n = height.length;
 
-        int sum = 0, low = 0, high = 0;
+        // Arrays to store the maximum height to the left and right of each index
+        int[] max_left = new int[n];
+        int[] max_right = new int[n];
 
-        // Iterate through the array, fixing one number at a time
-        for (int i = 0; i < nums.length - 2; i++) {
+        // Initialize the left boundary
+        max_left[0] = 0;
+        int max = height[0];
 
-            /*
-             * Skip duplicate elements to avoid duplicate triplets
-             */
-            if (i == 0 || (i > 0 && nums[i] != nums[i - 1])) {
+        // Fill max_left array
+        // max_left[i] stores the tallest bar to the left of index i
+        for (int i = 1; i < n; i++) {
+            max = Math.max(height[i], max);
+            max_left[i] = max;
+        }
 
-                // Target sum for the remaining two numbers
-                sum = 0 - nums[i];
+        // Initialize the right boundary
+        max_right[n - 1] = 0;
+        max = height[n - 1];
 
-                // Initialize two pointers
-                low = i + 1;
-                high = nums.length - 1;
+        // Fill max_right array
+        // max_right[i] stores the tallest bar to the right of index i
+        for (int i = n - 2; i >= 0; i--) {
+            max = Math.max(height[i], max);
+            max_right[i] = max;
+        }
 
-                // Two-pointer approach to find pairs that sum to "sum"
-                while (low < high) {
+        int trappedWater = 0;
 
-                    if (sum == nums[low] + nums[high]) {
+        // Calculate trapped water at each index
+        for (int i = 1; i < n - 1; i++) {
 
-                        // Found a valid triplet
-                        list.add(Arrays.asList(nums[i], nums[low], nums[high]));
+            // Water level is determined by the shorter boundary
+            int minBoundary = Math.min(max_left[i], max_right[i]);
 
-                        // Skip duplicate values for low pointer
-                        while (low < high && nums[low] == nums[low + 1]) low++;
-
-                        // Skip duplicate values for high pointer
-                        while (low < high && nums[high] == nums[high - 1]) high--;
-
-                        // Move both pointers inward
-                        low++;
-                        high--;
-                    }
-                    // If the sum is too small, move low pointer forward
-                    else if (sum > nums[low] + nums[high]) {
-                        low++;
-                    }
-                    // If the sum is too large, move high pointer backward
-                    else {
-                        high--;
-                    }
-                }
+            // Add trapped water at current index (if any)
+            if (minBoundary > height[i]) {
+                trappedWater += minBoundary - height[i];
             }
         }
-        return list;
+
+        // Return total trapped water
+        return trappedWater;
     }
 }
